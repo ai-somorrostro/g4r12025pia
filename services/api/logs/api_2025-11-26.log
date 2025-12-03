@@ -1,0 +1,6 @@
+2025-11-26 11:26:04 | INFO     | ============================================================
+2025-11-26 11:26:04 | INFO     | Film Data API iniciada correctamente
+2025-11-26 11:26:04 | INFO     | Directorio de datos: /app/data
+2025-11-26 11:26:04 | INFO     | Directorio de logs: /app/logs
+2025-11-26 11:26:04 | INFO     | Archivo de películas: /app/data/films.json
+2025-11-26 11:26:04 | INFO     | ============================================================
