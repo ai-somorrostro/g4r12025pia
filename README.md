@@ -1,28 +1,3 @@
-# 🎬 Sistema RETO 1 - Movie RAG System
-
-Sistema completo de gestión y consulta inteligente de películas usando RAG (Retrieval-Augmented Generation).
-
----
-
-## 📋 Descripción
-
-Sistema dockerizado que:
-1. **Extrae** datos de películas desde TMDB
-2. **Almacena** y sirve datos vía API REST
-3. **Indexa** películas en Elasticsearch
-4. **Responde** preguntas inteligentes usando LLM (Groq) + RAG
-
----
-
-## 🏗️ Arquitectura
-
-```
-TMDB API → Scrapper → FastAPI → Logstash → Elasticsearch → LLM Manager (RAG)
-                         ↓                                        ↓
-                    CRUD Endpoints                         Groq (llama-3.3)
-```
-
----
 
 ## 🚀 Inicio Rápido
 

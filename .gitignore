@@ -26,3 +26,8 @@ Thumbs.db
 # Temp
 output.txt
 temp_query.json
+
+# Scripts de utilidad
+upload_github.ps1
+
+
