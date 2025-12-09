@@ -1,20 +1,20 @@
 import os
 
 class Config:
-    # TMDB Configuration
+    # Configuracion de TMDB
     TMDB_API_KEY = os.getenv("TMDB_API_KEY", "7a3fe81983e3595f4ed4a0c67777af0b")
     BASE_URL = "https://api.themoviedb.org/3"
     
-    # Paths
+    # Rutas
     BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     DATA_DIR = os.path.join(BASE_DIR, "data")
     LOGS_DIR = os.path.join(BASE_DIR, "logs")
     
-    # Files
+    # Archivos
     JSON_FILE = os.path.join(DATA_DIR, "films.json")
     CSV_FILE = os.path.join(DATA_DIR, "films.csv")
     
-    # Execution
+    # Ejecucion
     INTERVAL_MINUTES = int(os.getenv("INTERVAL_MINUTES", 10))
 
     @staticmethod

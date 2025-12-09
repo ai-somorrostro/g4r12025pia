@@ -15,7 +15,7 @@ services:
     networks:
       - app-network
 
-  # Elasticsearch Service (Required for Logstash output)
+  # Servicio Elasticsearch (Requerido para Logstash)
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.12.0
     container_name: elasticsearch
@@ -30,7 +30,7 @@ services:
     networks:
       - app-network
 
-  # API service - Sirve los datos de películas
+  # Servicio API - Sirve los datos de películas
   api:
     build:
       context: ./services/api
@@ -50,7 +50,7 @@ services:
     networks:
       - app-network
 
-  # Logstash Service
+  # Servicio Logstash
   logstash:
     image: docker.elastic.co/logstash/logstash:8.12.0
     container_name: logstash

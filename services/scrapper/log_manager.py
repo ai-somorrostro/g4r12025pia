@@ -41,5 +41,5 @@ class LogManager:
     def warning(self, msg):  self.logger.warning(msg)
     def error(self, msg, exc=False):   self.logger.error(msg, exc_info=exc)
     def debug(self, msg):    self.logger.debug(msg)
-    def success(self, msg):  self.logger.info(f"ÉXITO → {msg}")
-    def critical(self, msg): self.logger.critical(f"FALLO → {msg}")
+    def success(self, msg):  self.logger.info(f"EXITO -> {msg}")
+    def critical(self, msg): self.logger.critical(f"FALLO -> {msg}")

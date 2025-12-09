@@ -15,7 +15,7 @@ class TMDBExtractor:
         self.log.info("1/4 - Descargando trending semanal...")
         movies = self._get_endpoint(f"{Config.BASE_URL}/trending/movie/week", pages=30)
         all_movies.extend(movies)
-        self.log.success(f"Trending → {len(movies)} películas")
+        self.log.success(f"Trending -> {len(movies)} peliculas")
 
         # 2. Estrenos Recientes
         self.log.info("2/4 - Descargando estrenos recientes...")
@@ -25,7 +25,7 @@ class TMDBExtractor:
             pages=50
         )
         all_movies.extend(movies)
-        self.log.success(f"Estrenos recientes → {len(movies)} películas")
+        self.log.success(f"Estrenos recientes -> {len(movies)} peliculas")
 
         # 3. Más Votadas
         self.log.info("3/4 - Más votadas históricas...")
@@ -35,13 +35,13 @@ class TMDBExtractor:
             pages=40
         )
         all_movies.extend(movies)
-        self.log.success(f"Más votadas → {len(movies)} películas")
+        self.log.success(f"Mas votadas -> {len(movies)} peliculas")
 
-        # 4. Top Rated
-        self.log.info("4/4 - Top rated...")
+        # 4. Mejor Valoradas (Top Rated)
+        self.log.info("4/4 - Mejor valoradas...")
         movies = self._get_endpoint(f"{Config.BASE_URL}/movie/top_rated", pages=30)
         all_movies.extend(movies)
-        self.log.success(f"Top rated → {len(movies)} películas")
+        self.log.success(f"Mejor valoradas -> {len(movies)} peliculas")
 
         return self._remove_duplicates(all_movies)
 
@@ -73,6 +73,6 @@ class TMDBExtractor:
         return movies
 
     def _remove_duplicates(self, movies):
-        """Elimina duplicados basándose en el ID"""
+        """Elimina duplicados basandose en el ID"""
         unique_movies = {m["id"]: m for m in movies}
         return list(unique_movies.values())

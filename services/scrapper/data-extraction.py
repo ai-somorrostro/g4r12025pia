@@ -8,7 +8,7 @@ from modules.storage import StorageManager
 log = LogManager("TMDB-Scraper", log_dir=Config.LOGS_DIR)
 
 def run_scraper():
-    """Función principal de ejecución del scraper"""
+    """Funcion principal de ejecucion del scraper"""
     Config.ensure_directories()
     
     extractor = TMDBExtractor(log)
