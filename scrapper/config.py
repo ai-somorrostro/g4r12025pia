@@ -14,11 +14,6 @@ class Config:
     JSON_FILE = os.path.join(DATA_DIR, "films.json")
     CSV_FILE = os.path.join(DATA_DIR, "films.csv")
     
-    # Database
-    MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
-    DB_NAME = "films_db"
-    COLLECTION_NAME = "movies"
-    
     # Execution
     INTERVAL_MINUTES = int(os.getenv("INTERVAL_MINUTES", 10))
 

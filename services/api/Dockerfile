@@ -1,20 +1,20 @@
-# Use Python 3.11 slim image
+# Imagen base de Python 3.11 slim
 FROM python:3.11-slim
 
-# Set working directory
+# Directorio de trabajo
 WORKDIR /app
 
-# Copy requirements first for better caching
+# Copiar requirements primero para aprovechar cache
 COPY requirements.txt .
 
-# Install dependencies
+# Instalar dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the API code
+# Copiar codigo de la API
 COPY main.py .
 
-# Expose port 8000 for FastAPI
+# Exponer puerto 8000
 EXPOSE 8000
 
-# Run uvicorn server
+# Ejecutar servidor uvicorn
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

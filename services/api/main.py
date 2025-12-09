@@ -8,7 +8,7 @@ from datetime import datetime
 import time
 import requests
 
-app = FastAPI(title="Film Data API", version="1.0")
+app = FastAPI(title="API de Peliculas", version="1.0")
 
 # ===================== CONFIGURACIÓN DE LOGS =====================
 # Ruta al archivo JSON generado por el scrapper
@@ -68,19 +68,19 @@ async def log_requests(request: Request, call_next):
     method = request.method
     path = request.url.path
     
-    logger.info(f"→ {method} {path} | IP: {client_ip}")
+    logger.info(f"-> {method} {path} | IP: {client_ip}")
     
     # Procesar la petición
     try:
         response = await call_next(request)
         process_time = (time.time() - start_time) * 1000  # ms
         
-        logger.info(f"← {method} {path} | Status: {response.status_code} | {process_time:.2f}ms")
+        logger.info(f"<- {method} {path} | Status: {response.status_code} | {process_time:.2f}ms")
         
         return response
     except Exception as e:
         process_time = (time.time() - start_time) * 1000
-        logger.error(f"✗ {method} {path} | Error: {str(e)} | {process_time:.2f}ms")
+        logger.error(f"Error: {method} {path} | Error: {str(e)} | {process_time:.2f}ms")
         raise
 
 # ===================== ENDPOINTS =====================
@@ -301,52 +301,3 @@ def delete_film(film_title: str):
     except Exception as e:
         logger.error(f"Error al eliminar película '{film_title}': {str(e)}")
         raise HTTPException(status_code=500, detail=f"Error al eliminar la película: {str(e)}")
-
-@app.post("/sync-logstash")
-def sync_to_logstash():
-    """Envía los datos de películas a Logstash"""
-    if not os.path.exists(FILMS_FILE):
-        logger.warning("Archivo de películas no encontrado")
-        raise HTTPException(
-            status_code=404, 
-            detail="No se encontró el archivo de películas"
-        )
-    
-    try:
-        # Leer el archivo JSON
-        with open(FILMS_FILE, 'r', encoding='utf-8') as f:
-            films = json.load(f)
-        
-        # URL de Logstash (ajusta según tu configuración)
-        logstash_url = "http://logstash:8000"
-        
-        # Enviar datos a Logstash
-        response = requests.post(
-            logstash_url,
-            json={"films": films, "total": len(films)},
-            headers={"Content-Type": "application/json"}
-        )
-        
-        if response.status_code == 200:
-            logger.info(f"Datos sincronizados con Logstash: {len(films)} películas")
-            return {
-                "success": True,
-                "message": f"Se sincronizaron {len(films)} películas con Logstash",
-                "total_films": len(films)
-            }
-        else:
-            logger.error(f"Error al sincronizar con Logstash: {response.status_code}")
-            raise HTTPException(
-                status_code=500,
-                detail=f"Error al sincronizar con Logstash: {response.text}"
-            )
-            
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Error de conexión con Logstash: {str(e)}")
-        raise HTTPException(
-            status_code=503,
-            detail=f"No se pudo conectar con Logstash: {str(e)}"
-        )
-    except Exception as e:
-        logger.error(f"Error al sincronizar con Logstash: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
