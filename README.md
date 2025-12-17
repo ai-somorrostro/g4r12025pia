@@ -1,4 +1,4 @@
-# 🧪 Informe de Benchmarking: Modelos de IA y Embeddings
+# Informe de Benchmarking: Modelos de IA y Embeddings
 
 Este anexo detalla los resultados de las pruebas de rendimiento y precisión realizadas para seleccionar los componentes críticos del Chatbot Híbrido.
 
