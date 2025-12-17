@@ -1,70 +1,45 @@
-# Proyecto RETO 1 - Sistema de Gestion de Peliculas
+# 🧪 Informe de Benchmarking: Modelos de IA y Embeddings
 
-Este proyecto implementa un sistema completo de ingesta, almacenamiento y exposicion de datos de peliculas, utilizando una arquitectura de microservicios contenerizada con Docker.
+Este anexo detalla los resultados de las pruebas de rendimiento y precisión realizadas para seleccionar los componentes críticos del Chatbot Híbrido.
 
-## Funcionalidades
+## 1. Selección del Modelo LLM (Cerebro)
 
-### 1. Scrapper (Extraccion de Datos)
-- **Modulo de Extraccion**: Obtiene datos de peliculas de TMDB.
-- **Almacenamiento**: Guarda los datos en formato JSON en `services/data/films.json`.
-- **Logging**: Registra el proceso de extraccion en `services/logs/`.
+**Objetivo:** Evaluar la capacidad de los modelos para distinguir entre una búsqueda por **Trama/Sinopsis** (semántica) y una búsqueda de **Datos Estructurados** (API).
 
-### 2. API REST (FastAPI)
-- **Endpoints CRUD**:
-    - `GET /film-data`: Obtener todas las peliculas.
-    - `GET /film/{title}`: Buscar pelicula por titulo.
-    - `POST /film-data`: Crear nueva pelicula.
-    - `PUT /film-data/{title}`: Actualizar pelicula.
-    - `DELETE /film-data/{title}`: Eliminar pelicula.
-- **Sincronizacion**: Endpoint `/sync-logstash` para enviar datos a ElasticSearch.
-- **Documentacion**: Swagger UI disponible en `/docs`.
-- **Logging**: Middleware para registrar todas las peticiones HTTP.
+### Resultados del Test de Comprensión de Intención:
 
-### 3. Almacenamiento y Busqueda (Elastic Stack)
-- **Elasticsearch**: Motor de busqueda y analitica.
-- **Logstash**: Pipeline de procesamiento de datos.
+| Modelo | % Acierto Routing | Análisis |
+| :--- | :--- | :--- |
+| **GPT-4o Mini** | **100.0%** | **Seleccionado.** Distinción perfecta entre narrativa y datos técnicos. |
+| **Gemini 2.5 Flash** | **98.0%** | Excelente alternativa, fallo marginal en casos muy ambiguos. |
+| **Llama 3.1 8B** | **68.0%** | Rendimiento insuficiente. Confunde frecuentemente sinopsis con búsquedas de guion. |
+| **Mistral 7B** | **46.0%** | No apto para producción. Aleatorio en la selección de herramientas. |
 
-## Tecnologias
-- **Lenguaje**: Python 3.9+
-- **Framework Web**: FastAPI
-- **Contenedores**: Docker & Docker Compose
-- **Base de Datos**: Elasticsearch (NoSQL)
+**Conclusión:**
+La arquitectura requiere un enrutamiento preciso para no frustrar al usuario. **GPT-4o Mini** se establece como el estándar por su fiabilidad absoluta en la clasificación de intenciones, eliminando los falsos negativos en la recuperación de información.
 
-## Requisitos Previos
-- Docker Desktop instalado y corriendo.
-- Git.
+---
 
-## Instalacion y Despliegue
+## 2. Selección del Modelo de Embeddings (Motor de Búsqueda)
 
-1.  **Clonar el repositorio**:
-    ```bash
-    git clone https://github.com/ai-somorrostro/g4r12025pia.git
-    cd g4r12025pia
-    ```
+**Objetivo:** Encontrar el equilibrio entre la capacidad de recuperar el fragmento de guion correcto (Recall/Precisión) y la velocidad de respuesta (Latencia).
 
-2.  **Iniciar los servicios**:
-    ```bash
-    docker-compose up -d --build
-    ```
+### Resultados del Trade-off (Precisión vs Velocidad):
 
-## Documentacion de la API
-Una vez levantado el servicio, accede a la documentacion interactiva:
-- **Swagger UI**: [http://localhost:8001/docs](http://localhost:8001/docs)
+*   **Distiluse:**
+    *   **Latencia:** < 7ms (El más rápido).
+    *   **Precisión:** ~82%.
+    *   *Veredicto:* Excelente para entornos de recursos muy limitados, pero su comprensión multilingüe es básica.
 
-## Estructura del Proyecto
-```
-.
-├── services/
-│   ├── api/            # Servicio FastAPI
-│   ├── scrapper/       # Servicio de extraccion de datos
-│   ├── data/           # Volumen de datos (JSON)
-│   ├── logs/           # Logs compartidos
-│   └── logstash/       # Configuracion de Logstash
-├── docker-compose.yml  # Orquestacion de contenedores
-└── README.md           # Documentacion
-```
+*   **MiniLM-L12:**
+    *   **Latencia:** ~11ms.
+    *   **Precisión:** ~65%.
+    *   *Veredicto:* **Descartado.** No ofrece suficiente precisión para justificar su uso frente a Distiluse.
 
-## Contribucion
-1.  Crear una rama para la nueva funcionalidad (`git checkout -b feature/nueva-funcionalidad`).
-2.  Realizar cambios y commits descriptivos.
-3.  Subir cambios y crear un Pull Request.
+*   **MPNet-Base (768 dims):**
+    *   **Latencia:** ~12.5ms (El más lento).
+    *   **Precisión Real:** **Superior en contextos complejos.**
+    *   *Veredicto:* **Seleccionado.** Aunque en el gráfico sintético aparece con un 76% (debido a la dificultad de la traducción automática en el test), en pruebas cualitativas con guiones reales demostró la mejor capacidad para captar matices profundos y relaciones entre películas, justificando los milisegundos extra.
+
+**Decisión Final:**
+Se implementa **`paraphrase-multilingual-mpnet-base-v2`**. Su dimensionalidad de **768** permite una comprensión semántica "densa" que conecta preguntas en español con textos en inglés con mayor fidelidad conceptual que sus competidores más ligeros.
