@@ -11,6 +11,11 @@ services:
       - ./services/logs:/app/logs
     environment:
       - TZ=Europe/Madrid
+      # VALIDACION: [Issue #2] [VAR-01] Clave de API de TMDB
+      - TMDB_API_KEY=${TMDB_API_KEY}
+      # VALIDACION: [Issue #9] [VAR-02] URL de Elasticsearch
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ES_INDEX=movies-logstash
     restart: unless-stopped
     networks:
       - app-network
@@ -39,13 +44,14 @@ services:
     ports:
       - "8001:8000"
     volumes:
-      - ./services/data:/app/data
-      - ./services/api:/app
+      # VALIDACION: [Issue #7] PRODUCCION: No se monta el volumen de código host.
       - ./services/logs:/app/logs
     environment:
       - TZ=Europe/Madrid
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
+      - ES_INDEX=movies-logstash
     depends_on:
-      - scrapper
+      - elasticsearch
     restart: unless-stopped
     networks:
       - app-network
