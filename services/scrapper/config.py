@@ -2,7 +2,14 @@ import os
 
 class Config:
     # Configuracion de TMDB
-    TMDB_API_KEY = os.getenv("TMDB_API_KEY", "7a3fe81983e3595f4ed4a0c67777af0b")
+    # VALIDACION: [Issue #2] SEGURIDAD: Se elimina la API key hardcodeada para evitar fugas de credenciales.
+    # Ahora se lee de variables de entorno, lo que permite rotar claves sin tocar el código.
+    # VALIDACION: [Issue #2] LECTURA DE VARIABLE DE ENTORNO [VAR-01]: 'os.getenv' busca en el sistema operativo.
+    TMDB_API_KEY = os.getenv("TMDB_API_KEY")
+    if not TMDB_API_KEY:
+        # Fallo controlado: El servicio no debe arrancar si falta una credencial crítica.
+        print("ERROR: La variable de entorno TMDB_API_KEY no está definida.")
+        sys.exit(1)
     BASE_URL = "https://api.themoviedb.org/3"
     
     # Rutas
