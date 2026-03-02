@@ -17,4 +17,6 @@ COPY main.py .
 EXPOSE 8000
 
 # Ejecutar servidor uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# VALIDACION: [Issue #7] PRODUCCION: Eliminado el flag --reload para asegurar estabilidad y rendimiento.
+# En producción, la imagen debe ser inmutable; cualquier cambio de código requiere una nueva imagen.
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
